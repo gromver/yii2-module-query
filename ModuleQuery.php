@@ -58,7 +58,7 @@ class ModuleQuery extends Object {
      */
     public static function instance()
     {
-        return Yii::createObject(get_called_class());//new static();
+        return Yii::createObject(get_called_class());
     }
 
 
