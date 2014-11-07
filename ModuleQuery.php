@@ -1,13 +1,13 @@
 <?php
 /**
- * @link https://github.com/menst/yii2-cms.git#readme
+ * @link https://github.com/gromver/yii2-cms.git#readme
  * @copyright Copyright (c) Gayazov Roman, 2014
- * @license https://github.com/menst/yii2-cms/blob/master/LICENSE
+ * @license https://github.com/gromver/yii2-cms/blob/master/LICENSE
  * @package yii2-module-query
  * @version 1.0.0
  */
 
-namespace menst\modulequery;
+namespace gromver\modulequery;
 
 use Yii;
 use yii\base\Module;
@@ -17,7 +17,7 @@ use yii\caching\Cache;
 /**
  * Class ModuleQuery
  * @package yii2-module-query
- * @author Gayazov Roman <m.e.n.s.t@yandex.ru>
+ * @author Gayazov Roman <gromver5@gmail.com>
  */
 class ModuleQuery extends Object {
     const CACHE_KEY = __CLASS__;
