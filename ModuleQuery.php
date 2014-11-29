@@ -20,7 +20,7 @@ use yii\caching\Cache;
  * @author Gayazov Roman <gromver5@gmail.com>
  */
 class ModuleQuery extends Object {
-    //методы слияния результатов функции execute
+    //методы слияния результатов функции fetch
     const AGGREGATE_MERGE = 1;    //слияние с использованием array_merge, применимо если все результаты являются массивами
     const AGGREGATE_PUSH = 2;     //добавление результатов Push методом
 
