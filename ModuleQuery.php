@@ -20,7 +20,6 @@ use yii\caching\Cache;
  * @author Gayazov Roman <gromver5@gmail.com>
  */
 class ModuleQuery extends Object {
-    const CACHE_KEY = __CLASS__;
     //методы слияния результатов функции execute
     const AGGREGATE_MERGE = 1;    //слияние с использованием array_merge, применимо если все результаты являются массивами
     const AGGREGATE_PUSH = 2;     //добавление результатов Push методом
@@ -41,7 +40,7 @@ class ModuleQuery extends Object {
      */
     private $_depth;
     /**
-     * @var string имя интерфейса, класса и трейта которое должны наследовать искомые модули
+     * @var string имя интерфейса, класса или трейта которое должно наследоваться искомыми модулями
      */
     private $_implement;
     /**
@@ -91,6 +90,10 @@ class ModuleQuery extends Object {
         return $this;
     }
 
+    /**
+     * @param Cache $cache
+     * @return $this
+     */
     public function cache(Cache $cache)
     {
         $this->cache = $cache;
@@ -112,6 +115,11 @@ class ModuleQuery extends Object {
         return $this;
     }
 
+    /**
+     * Запускает метод $method в модулях удовлетворяющих условиям запроса
+     * @param string $method название метода
+     * @param array $params параметры передаваемые в метод
+     */
     public function invoke($method, $params = [])
     {
         foreach ($this->find() as $moduleId) {
@@ -120,21 +128,36 @@ class ModuleQuery extends Object {
         }
     }
 
-    public function execute($method, $params = [], $aggregate = self::AGGREGATE_PUSH)
+    /**
+     * @param string $method название метода
+     * @param array $params параметры передаваемые в метод
+     * @param int $aggregate метод слияния результатов выполнения функций $method
+     * @param bool $useCache применять ли кеширование к [[self::fetchResults]] фазе
+     * @return array|mixed
+     */
+    public function fetch($method, $params = [], $aggregate = self::AGGREGATE_PUSH, $useCache = true)
     {
-        if ($this->cache) {
+        if ($useCache && $this->cache) {
             $cacheKey = [$this->getFindCacheKey(), $method, $params, $aggregate];
             if (($result = $this->cache->get($cacheKey)) === false) {
-                $result = $this->executeModules($this->find(), $method, $params, $aggregate);
+                $result = $this->fetchResults($this->find(), $method, $params, $aggregate);
                 $this->cache->set($cacheKey, $result, $this->cacheDuration, $this->cacheDependency);
             }
 
             return $result;
         }
-        return $this->executeModules($this->find(), $method, $params, $aggregate);
+
+        return $this->fetchResults($this->find(), $method, $params, $aggregate);
     }
 
-    private function executeModules($modules, $method, $params, $aggregate = self::AGGREGATE_PUSH)
+    /**
+     * @param array $modules
+     * @param string $method
+     * @param array $params
+     * @param int $aggregate
+     * @return array
+     */
+    private function fetchResults($modules, $method, $params, $aggregate = self::AGGREGATE_PUSH)
     {
         $result = [];
         foreach ($modules as $moduleId) {
@@ -150,6 +173,7 @@ class ModuleQuery extends Object {
     }
 
     /**
+     * Производит поиск модулей удовлетворяющих условиям запроса
      * @return string[] Modules Ids
      */
     public function find()
@@ -177,7 +201,7 @@ class ModuleQuery extends Object {
 
     private function getFindCacheKey()
     {
-        return [self::CACHE_KEY, Yii::$app->name, $this->_implement, $this->_orderBy, $this->_sort];
+        return [__CLASS__, Yii::$app->name, $this->_implement, $this->_orderBy, $this->_sort];
     }
 
     /**
