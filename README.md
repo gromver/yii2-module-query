@@ -25,6 +25,4 @@ to the require section of your `composer.json` file.
 Usage
 -----
 
-Once the extension is installed, simply use it in your code by  :
-
-TBD
+Данное расширение решает проблему меж модульного взаимодействия.
