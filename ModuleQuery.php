@@ -10,7 +10,6 @@
 namespace gromver\modulequery;
 
 use Yii;
-use yii\base\Event;
 use yii\base\Module;
 use yii\base\Object;
 use yii\caching\Cache;
