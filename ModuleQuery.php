@@ -10,12 +10,14 @@
 namespace gromver\modulequery;
 
 use Yii;
+use yii\base\Event;
 use yii\base\Module;
 use yii\base\Object;
 use yii\caching\Cache;
 
 /**
  * Class ModuleQuery
+ * Не использовать ModuleQuery в init() и __construct() методах модулей! Это может зациклить приложение
  * @package yii2-module-query
  * @author Gayazov Roman <gromver5@gmail.com>
  */
@@ -43,6 +45,10 @@ class ModuleQuery extends Object {
      * @var string имя интерфейса, класса или трейта которое должно наследоваться искомыми модулями
      */
     private $_implement;
+    /**
+     * @var string имя события
+     */
+    private $_event;
     /**
      * @var string название своиства модуля по которому будет производится сортировка
      */
@@ -129,6 +135,26 @@ class ModuleQuery extends Object {
     }
 
     /**
+     * Аналогично [[self::invoke]] только с возможностью обработчиком события прервать его
+     * @param string $event
+     * @param array $params
+     * @return bool
+     */
+    public function trigger($event, $params)
+    {
+        $this->_event = $event;
+        foreach ($this->find() as $moduleId) {
+            /** @var ModuleEventsInterface $module */
+            $module = Yii::$app->getModule($moduleId);
+            if (call_user_func_array($module->events()[$event], $params) === false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * @param string $method название метода
      * @param array $params параметры передаваемые в метод
      * @param int $aggregate метод слияния результатов выполнения функций $method
@@ -201,7 +227,7 @@ class ModuleQuery extends Object {
 
     private function getFindCacheKey()
     {
-        return [__CLASS__, Yii::$app->name, $this->_implement, $this->_orderBy, $this->_sort];
+        return [__CLASS__, Yii::$app->name, $this->_implement, $this->_event, $this->_orderBy, $this->_sort];
     }
 
     /**
@@ -219,12 +245,13 @@ class ModuleQuery extends Object {
 
         foreach ($parentModule->getModules() as $name => $config) {
             $module = $parentModule->getModule($name);
-            if ($this->_implement === null) {
-                $modules[] = $module;
-            } elseif(is_a($module, $this->_implement)) {
-                $modules[] = $module;
+            $matched = true;
+            if (isset($this->_implement) && !is_a($module, $this->_implement)) {
+                $matched = false;
+            } elseif (isset($this->_event) && (!$module instanceof ModuleEventsInterface || !array_key_exists($this->_event, $module->events()))) {
+                $matched = false;
             }
-
+            if ($matched) $modules[] = $module;
             $modules = array_merge($modules, $this->findModules($module, $level + 1));
         }
 
