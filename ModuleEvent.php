@@ -9,6 +9,7 @@
 
 namespace gromver\modulequery;
 
+
 use Yii;
 
 /**
@@ -17,7 +18,8 @@ use Yii;
  * @package yii2-module-query
  * @author Gayazov Roman <gromver5@gmail.com>
  */
-class ModuleEvent {
+class ModuleEvent
+{
     /**
      * @var ModuleQuery
      */

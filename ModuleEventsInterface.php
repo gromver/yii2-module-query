@@ -9,12 +9,14 @@
 
 namespace gromver\modulequery;
 
+
 /**
  * Interface ModuleEventsInterface
  * @package yii2-module-query
  * @author Gayazov Roman <gromver5@gmail.com>
  */
-interface ModuleEventsInterface {
+interface ModuleEventsInterface
+{
     /**
      * @return array [eventName => callable, ...]
      */

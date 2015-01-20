@@ -9,9 +9,9 @@
 
 namespace gromver\modulequery;
 
+
 use Yii;
 use yii\base\Module;
-use yii\base\Object;
 use yii\caching\Cache;
 
 /**
@@ -20,7 +20,8 @@ use yii\caching\Cache;
  * @package yii2-module-query
  * @author Gayazov Roman <gromver5@gmail.com>
  */
-class ModuleQuery extends Object {
+class ModuleQuery extends \yii\base\Object
+{
     //методы слияния результатов функции fetch
     const AGGREGATE_MERGE = 1;    //слияние с использованием array_merge, применимо если все результаты являются массивами
     const AGGREGATE_PUSH = 2;     //добавление результатов Push методом
