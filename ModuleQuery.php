@@ -146,7 +146,13 @@ class ModuleQuery extends \yii\base\Object
         foreach ($this->find() as $moduleId) {
             /** @var ModuleEventsInterface $module */
             $module = Yii::$app->getModule($moduleId);
-            if (call_user_func_array($module->events()[$event], $params) === false) {
+
+            $func = $module->events()[$event];
+            if (is_string($func) && strpos($func, '::') === false) {
+                $func = [$module, $func];
+            }
+
+            if (call_user_func_array($func, $params) === false) {
                 return false;
             }
         }

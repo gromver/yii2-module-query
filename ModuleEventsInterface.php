@@ -19,6 +19,11 @@ interface ModuleEventsInterface
 {
     /**
      * @return array [eventName => callable, ...]
+     * callable:
+     *  - 'funcName', $module->funcName
+     *  - 'Class::funcName', Class::funcName
+     *  - ['Class', 'funcName'], Class::funcName
+     *  - [Object, 'funcName'], Object->funcName
      */
     public function events();
 } 
