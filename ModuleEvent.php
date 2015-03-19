@@ -54,4 +54,4 @@ class ModuleEvent
             return $result;
         }
     }
-} 
+}

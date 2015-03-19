@@ -136,18 +136,19 @@ class ModuleQuery extends \yii\base\Object
 
     /**
      * Аналогично [[self::invoke]] только с возможностью обработчиком события прервать его
-     * @param string $event
-     * @param array $params
+     * @param string $name      Название события
+     * @param array $params     Массив с параметрами для обработчика события
      * @return bool
      */
-    public function trigger($event, $params)
+    public function trigger($name, $params)
     {
-        $this->_event = $event;
+        $this->_event = $name;
+
         foreach ($this->find() as $moduleId) {
             /** @var ModuleEventsInterface $module */
             $module = Yii::$app->getModule($moduleId);
 
-            $func = $module->events()[$event];
+            $func = $module->events()[$name];
             if (is_string($func) && strpos($func, '::') === false) {
                 $func = [$module, $func];
             }
