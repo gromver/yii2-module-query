@@ -40,18 +40,16 @@ class ModuleEvent
     /**
      * @param string $name название события
      * @param Event $event обьект события
-     * @param bool $useCache использовать кеширование - выпринципе бесполезная опция
-     * @return bool
+     * @param string $returnProperty своиство объекта $event для возврата
+     * @return mixed
      */
-    static public function trigger($name, Event $event, $useCache = true)
+    static public function trigger($name, Event $event, $returnProperty = null)
     {
-        if ($useCache) {
-            return self::moduleQuery()->trigger($name, $event);
-        } else {
-            $cache = self::moduleQuery()->cache;
-            $result = self::moduleQuery()->cache(null)->trigger($name, $event);
-            self::moduleQuery()->cache($cache);
-            return $result;
+        self::moduleQuery()->trigger($name, $event);
+        if (isset($returnProperty)) {
+            return $event->{$returnProperty};
         }
+
+        return null;
     }
 }

@@ -138,7 +138,7 @@ class ModuleQuery extends \yii\base\Object
      * Аналогично [[self::invoke]] только с возможностью обработчиком события прервать его
      * @param string $name Название события
      * @param Event $event Объект события
-     * @return bool
+     * @return mixed
      */
     public function trigger($name, Event $event)
     {
@@ -153,12 +153,12 @@ class ModuleQuery extends \yii\base\Object
                 $func = [$module, $func];
             }
 
-            if (call_user_func($func, $event) === false) {
-                return false;
+            call_user_func($func, $event);
+
+            if ($event->handled === true) {
+                return;
             }
         }
-
-        return true;
     }
 
     /**
