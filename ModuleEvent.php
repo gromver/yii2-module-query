@@ -38,18 +38,18 @@ class ModuleEvent
     }
 
     /**
-     * @param $event
-     * @param $params
-     * @param bool $useCache
+     * @param string $name название события
+     * @param Event $event обьект события
+     * @param bool $useCache использовать кеширование - выпринципе бесполезная опция
      * @return bool
      */
-    static public function trigger($event, $params, $useCache = true)
+    static public function trigger($name, Event $event, $useCache = true)
     {
         if ($useCache) {
-            return self::moduleQuery()->trigger($event, $params);
+            return self::moduleQuery()->trigger($name, $event);
         } else {
             $cache = self::moduleQuery()->cache;
-            $result = self::moduleQuery()->cache(null)->trigger($event, $params);
+            $result = self::moduleQuery()->cache(null)->trigger($name, $event);
             self::moduleQuery()->cache($cache);
             return $result;
         }
