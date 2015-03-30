@@ -27,6 +27,10 @@ abstract class Event extends Object {
      */
     public $name;
     /**
+     * @var object the sender of this event.
+     */
+    public $sender;
+    /**
      * @var boolean whether the event is handled. Defaults to false.
      * When a handler sets this to be true, the event processing will stop and
      * ignore the rest of the uninvoked event handlers.
